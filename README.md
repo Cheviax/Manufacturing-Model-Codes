@@ -16,7 +16,7 @@ ARTISTIC is a highly innovative and multidisciplinary project devoted to improve
   
  Contributors
 ========================================================
-  - **Alejandro A. Franco** , Research Engineer
+  - **Alejandro A. Franco** , Principal Investigator
   - **Teo Lombardo** , PhD (@teolombrado)
   - **Emiliano Primo** , Post-Doc (@primo-emiliano)
   - **Alain Ngandjong** , Post-Doc
