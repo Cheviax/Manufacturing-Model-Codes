@@ -1,0 +1,52 @@
+#For any question about the generation of the initial Structure please referes to Section 2.2 of the Supporting infomation of https://doi.org/10.1002/batt.202000049
+
+#Initial Random Structure : Active materials (NMC) + Carbon Binder Domain(CBD) (PVDF + Carbon black) - This code is related to the following slurry composition: AM: 96.wt%, Carbon black: 2.wt%, PVdF: 2.wt% for the AM particle size distribution reported in the Supportin Information (Figure S2) of https://doi.org/10.1002/batt.202000049
+
+units	        micro	
+atom_style      sphere 
+boundary        p p p
+
+region          box block -100 100 -100 100 -600 600 units box
+create_box      7 box
+
+#CBD
+create_atoms 1 random 473 36484 NULL units box
+create_atoms 1 random 473 26485 NULL units box
+create_atoms 1 random 473 32687 NULL units box
+create_atoms 1 random 473 63297 NULL units box
+create_atoms 1 random 474 23684 NULL units box  
+create_atoms 1 random 473 23164 NULL units box
+create_atoms 1 random 473 49782 NULL units box
+create_atoms 1 random 473 65921 NULL units box
+create_atoms 1 random 473 32986 NULL units box
+create_atoms 1 random 473 53674 NULL units box
+create_atoms 1 random 473 21689 NULL units box
+create_atoms 1 random 473 32684 NULL units box
+create_atoms 1 random 474 72385 NULL units box
+create_atoms 1 random 473 69824 NULL units box
+create_atoms 1 random 474 46135 NULL units box
+create_atoms 1 random 473 78199 NULL units box
+create_atoms 1 random 473 66978 NULL units box
+create_atoms 1 random 473 32159 NULL units box
+create_atoms 1 random 473 75364 NULL units box
+create_atoms 1 random 473 46825 NULL units box
+
+#AM                              
+create_atoms 2 random  73 66658 NULL units box  
+create_atoms 3 random  91 22223 NULL units box
+create_atoms 4 random  64 15798 NULL units box
+create_atoms 5 random  57 79433 NULL units box
+create_atoms 6 random  82 21978 NULL units box
+create_atoms 7 random  29 77798 NULL units box
+
+set type 1 diameter 6.2   density 0.01 
+set type 2 diameter 2.5   density 4.65
+set type 3 diameter 3.5   density 4.65
+set type 4 diameter 4.5   density 4.65
+set type 5 diameter 5.86   density 4.65
+set type 6 diameter 8.28  density 4.65
+set type 7 diameter 10.35 density 4.65
+
+
+write_data coord_in.data
+
