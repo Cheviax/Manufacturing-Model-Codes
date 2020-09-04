@@ -1,0 +1,253 @@
+#Slurry : Active materials (NMC) + Carbon Binder Domain(CBD) (PVDF + Carbon black)
+
+units           micro
+dimension       3
+atom_style      sphere
+comm_modify vel yes
+
+# Particles parameters
+#Active Material
+
+#Diameter
+# diameter exp
+variable    d_e_a1 equal 2.5
+variable    d_e_a2 equal 3.5
+variable    d_e_a3 equal 4.5
+variable    d_e_a4 equal 5.86
+variable    d_e_a5 equal 8.28
+variable    d_e_a6 equal 10.35
+
+# LJ potential
+variable    epsi_am equal @P1@
+
+variable    epsi_a1 equal v_epsi_am*v_d_e_a1
+variable    epsi_a2 equal v_epsi_am*v_d_e_a2
+variable    epsi_a3 equal v_epsi_am*v_d_e_a3
+variable    epsi_a4 equal v_epsi_am*v_d_e_a4
+variable    epsi_a5 equal v_epsi_am*v_d_e_a5
+variable    epsi_a6 equal v_epsi_am*v_d_e_a6
+
+variable    w_sigma_am equal @P2@
+
+variable    sig_a1 equal v_w_sigma_am*v_d_e_a1 
+variable    sig_a2 equal v_w_sigma_am*v_d_e_a2
+variable    sig_a3 equal v_w_sigma_am*v_d_e_a3
+variable    sig_a4 equal v_w_sigma_am*v_d_e_a4
+variable    sig_a5 equal v_w_sigma_am*v_d_e_a5
+variable    sig_a6 equal v_w_sigma_am*v_d_e_a6
+
+variable    rc_a1 equal 1.14*v_d_e_a1
+variable    rc_a2 equal 1.14*v_d_e_a2
+variable    rc_a3 equal 1.14*v_d_e_a3
+variable    rc_a4 equal 1.14*v_d_e_a4
+variable    rc_a5 equal 1.14*v_d_e_a5
+variable    rc_a6 equal 1.14*v_d_e_a6
+
+variable d_a1 equal 1.14*v_d_e_a1
+variable d_a2 equal 1.14*v_d_e_a2
+variable d_a3 equal 1.14*v_d_e_a3
+variable d_a4 equal 1.14*v_d_e_a4
+variable d_a5 equal 1.14*v_d_e_a5
+variable d_a6 equal 1.14*v_d_e_a6
+
+# GH potential
+
+
+variable    Rho_sol_a equal 4.65
+
+#CBD
+
+#Diameter
+#LJ parameter
+variable    epsi_cb equal @P3@*v_d_cb
+variable    sig_cb equal 1.1
+variable    rc_cb  equal 2.2
+
+# GH potential
+variable    d_cb equal @P4@
+variable    Rho_cb equal @P5@
+variable    Kn equal @P6@
+variable    Kt equal 1.378*v_Kn
+variable    Gamman equal @P7@
+variable    Gammat equal 0.959*v_Gamman
+variable    Xu equal @P8@
+
+
+read_data       coord_in.data
+
+set type 1 diameter ${d_cb}  density ${Rho_cb} 
+set type 2 diameter ${d_a1}  density ${Rho_sol_a} 
+set type 3 diameter ${d_a2}  density ${Rho_sol_a} 
+set type 4 diameter ${d_a3}  density ${Rho_sol_a} 
+set type 5 diameter ${d_a4}  density ${Rho_sol_a} 
+set type 6 diameter ${d_a5}  density ${Rho_sol_a} 
+set type 7 diameter ${d_a6}  density ${Rho_sol_a} 
+
+neighbor        3.0 bin
+
+variable slurry_density equal ((2383*3.1415926*(v_d_cb^(3))*(1/6)*v_Rho_cb*1E-12)+6.23879E-08)/(1E-12*lx*ly*lz)
+
+
+pair_style     hybrid/overlay lj/sf ${rc_a5} &
+               gran/hertz/history  ${Kn} ${Kt} ${Gamman} ${Gammat} ${Xu} 1 
+
+pair_coeff      1 1 lj/sf ${epsi_cb} ${sig_cb} ${rc_cb}  
+pair_coeff      2 2 lj/sf ${epsi_a1} ${sig_a1} ${rc_a1}
+pair_coeff      3 3 lj/sf ${epsi_a2} ${sig_a2} ${rc_a2}
+pair_coeff      4 4 lj/sf ${epsi_a3} ${sig_a3} ${rc_a3}
+pair_coeff      5 5 lj/sf ${epsi_a4} ${sig_a4} ${rc_a4}
+pair_coeff      6 6 lj/sf ${epsi_a5} ${sig_a5} ${rc_a5}
+pair_coeff      7 7 lj/sf ${epsi_a6} ${sig_a6} ${rc_a6}
+
+
+# interaction mix 1
+variable        epsi_12 equal (v_epsi_cb*v_epsi_a1)^(1/2)
+variable        epsi_13 equal (v_epsi_cb*v_epsi_a2)^(1/2)
+variable        epsi_14 equal (v_epsi_cb*v_epsi_a3)^(1/2)
+variable        epsi_15 equal (v_epsi_cb*v_epsi_a4)^(1/2)
+variable        epsi_16 equal (v_epsi_cb*v_epsi_a5)^(1/2)
+variable        epsi_17 equal (v_epsi_cb*v_epsi_a6)^(1/2)
+
+variable        sig_12 equal (v_sig_cb+v_sig_a1)/2
+variable        sig_13 equal (v_sig_cb+v_sig_a2)/2
+variable        sig_14 equal (v_sig_cb+v_sig_a3)/2
+variable        sig_15 equal (v_sig_cb+v_sig_a4)/2
+variable        sig_16 equal (v_sig_cb+v_sig_a5)/2
+variable        sig_17 equal (v_sig_cb+v_sig_a6)/2
+
+variable        rc_12 equal (v_rc_cb+v_rc_a1)/2
+variable        rc_13 equal (v_rc_cb+v_rc_a2)/2
+variable        rc_14 equal (v_rc_cb+v_rc_a3)/2
+variable        rc_15 equal (v_rc_cb+v_rc_a4)/2
+variable        rc_16 equal (v_rc_cb+v_rc_a5)/2
+variable        rc_17 equal (v_rc_cb+v_rc_a6)/2
+
+#interaction mix 2
+variable        epsi_23 equal (v_epsi_a1*v_epsi_a2)^(1/2)
+variable        epsi_24 equal (v_epsi_a1*v_epsi_a3)^(1/2)
+variable        epsi_25 equal (v_epsi_a1*v_epsi_a4)^(1/2)
+variable        epsi_26 equal (v_epsi_a1*v_epsi_a5)^(1/2)
+variable        epsi_27 equal (v_epsi_a1*v_epsi_a6)^(1/2)
+
+variable        sig_23 equal (v_sig_a1+v_sig_a2)/2
+variable        sig_24 equal (v_sig_a1+v_sig_a3)/2
+variable        sig_25 equal (v_sig_a1+v_sig_a4)/2
+variable        sig_26 equal (v_sig_a1+v_sig_a5)/2
+variable        sig_27 equal (v_sig_a1+v_sig_a6)/2
+
+variable        rc_23 equal (v_rc_a1+v_rc_a2)/2
+variable        rc_24 equal (v_rc_a1+v_rc_a3)/2
+variable        rc_25 equal (v_rc_a1+v_rc_a4)/2
+variable        rc_26 equal (v_rc_a1+v_rc_a5)/2
+variable        rc_27 equal (v_rc_a1+v_rc_a6)/2
+
+#interaction mix 3
+variable        epsi_34 equal (v_epsi_a2*v_epsi_a3)^(1/2)
+variable        epsi_35 equal (v_epsi_a2*v_epsi_a4)^(1/2)
+variable        epsi_36 equal (v_epsi_a2*v_epsi_a5)^(1/2)
+variable        epsi_37 equal (v_epsi_a2*v_epsi_a6)^(1/2)
+
+variable        sig_34 equal (v_sig_a2+v_sig_a3)/2
+variable        sig_35 equal (v_sig_a2+v_sig_a4)/2
+variable        sig_36 equal (v_sig_a2+v_sig_a5)/2
+variable        sig_37 equal (v_sig_a2+v_sig_a6)/2
+
+variable        rc_34 equal (v_rc_a2+v_rc_a3)/2
+variable        rc_35 equal (v_rc_a2+v_rc_a4)/2
+variable        rc_36 equal (v_rc_a2+v_rc_a5)/2
+variable        rc_37 equal (v_rc_a2+v_rc_a6)/2
+
+
+#interaction mix 4
+variable        epsi_45 equal (v_epsi_a3*v_epsi_a4)^(1/2)
+variable        epsi_46 equal (v_epsi_a3*v_epsi_a5)^(1/2)
+variable        epsi_47 equal (v_epsi_a3*v_epsi_a6)^(1/2)
+
+variable        sig_45 equal (v_sig_a3+v_sig_a4)/2
+variable        sig_46 equal (v_sig_a3+v_sig_a5)/2
+variable        sig_47 equal (v_sig_a3+v_sig_a6)/2
+
+variable        rc_45 equal (v_rc_a3+v_rc_a4)/2
+variable        rc_46 equal (v_rc_a3+v_rc_a5)/2
+variable        rc_47 equal (v_rc_a3+v_rc_a6)/2
+
+#interaction mix 5
+variable        epsi_56 equal (v_epsi_a4*v_epsi_a5)^(1/2)
+variable        epsi_57 equal (v_epsi_a4*v_epsi_a6)^(1/2)
+
+variable        sig_56 equal (v_sig_a4+v_sig_a5)/2
+variable        sig_57 equal (v_sig_a4+v_sig_a6)/2
+
+variable        rc_56 equal (v_rc_a4+v_rc_a5)/2
+variable        rc_57 equal (v_rc_a4+v_rc_a6)/2
+
+#interaction mix 6
+variable        epsi_67 equal (v_epsi_a5*v_epsi_a6)^(1/2)
+
+variable        sig_67 equal (v_sig_a5+v_sig_a6)/2
+
+variable        rc_67 equal (v_rc_a5+v_rc_a6)/2
+
+
+pair_coeff      1 2 lj/sf ${epsi_12} ${sig_12} ${rc_12}
+pair_coeff      1 3 lj/sf ${epsi_13} ${sig_13} ${rc_13}
+pair_coeff      1 4 lj/sf ${epsi_14} ${sig_14} ${rc_14}
+pair_coeff      1 5 lj/sf ${epsi_15} ${sig_15} ${rc_15}
+pair_coeff      1 6 lj/sf ${epsi_16} ${sig_16} ${rc_16} 
+pair_coeff      1 7 lj/sf ${epsi_17} ${sig_17} ${rc_17}
+
+pair_coeff      2 3 lj/sf ${epsi_23} ${sig_23} ${rc_23}
+pair_coeff      2 4 lj/sf ${epsi_24} ${sig_24} ${rc_24}
+pair_coeff      2 5 lj/sf ${epsi_25} ${sig_25} ${rc_25}
+pair_coeff      2 6 lj/sf ${epsi_26} ${sig_26} ${rc_26}
+pair_coeff      2 7 lj/sf ${epsi_27} ${sig_27} ${rc_27}
+
+pair_coeff      3 4 lj/sf ${epsi_34} ${sig_34} ${rc_34}
+pair_coeff      3 5 lj/sf ${epsi_35} ${sig_35} ${rc_35}
+pair_coeff      3 6 lj/sf ${epsi_36} ${sig_36} ${rc_36}
+pair_coeff      3 7 lj/sf ${epsi_37} ${sig_37} ${rc_37}
+
+pair_coeff      4 5 lj/sf ${epsi_45} ${sig_45} ${rc_45}
+pair_coeff      4 6 lj/sf ${epsi_46} ${sig_46} ${rc_46}
+pair_coeff      4 7 lj/sf ${epsi_47} ${sig_47} ${rc_47}
+
+pair_coeff      5 6 lj/sf ${epsi_56} ${sig_56} ${rc_56}
+pair_coeff      5 7 lj/sf ${epsi_57} ${sig_57} ${rc_57}
+
+pair_coeff      6 7 lj/sf ${epsi_67} ${sig_67} ${rc_67}
+
+
+pair_coeff    * * gran/hertz/history
+
+
+timestep        0.001
+
+thermo 15000
+compute mytemp all temp/sphere
+compute mypress all pressure mytemp
+compute ke_rot all erotate/sphere
+
+
+thermo_style    custom step temp c_mytemp pe ke c_ke_rot press pzz vol lx ly lz 
+
+
+dump 1  all custom 350000 dump.com_*.atom id type x y z radius
+
+
+## --------------------- Relaxation ---------------------------------
+min_style cg
+minimize 1e-15 1e-15 5000000 10000000
+## --------------------- Dynamics -----------------------------------
+
+
+velocity all create 300.0 46659 mom yes rot yes dist gaussian
+fix NPT all npt/sphere temp 300.0 300.0 0.06 iso 0.0 100 1000
+fix 1 all ave/time 1 1 13000000 v_slurry_density file density_slurry mode scalar
+fix 2 all ave/time 1 1 13000000 c_mytemp file Temperature mode scalar
+
+run 13000000
+write_data   coord_out_slurry.data
+
+# --------------------End of Simulation- -----------------------------
+  
+
