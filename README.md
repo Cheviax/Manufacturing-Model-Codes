@@ -23,6 +23,7 @@ ARTISTIC is a highly innovative and multidisciplinary project devoted to improve
   - **Mehdi Chouchane** , PhD
   - **Marc Duquesnoy** , Research Engineer (@MarcDuquesnoy)
   - **Hassna El-Bousiydi** , PhD (@helbousiydy)
+  - **Abbos Shodiev**, PhD
  
  License
 ========================================================

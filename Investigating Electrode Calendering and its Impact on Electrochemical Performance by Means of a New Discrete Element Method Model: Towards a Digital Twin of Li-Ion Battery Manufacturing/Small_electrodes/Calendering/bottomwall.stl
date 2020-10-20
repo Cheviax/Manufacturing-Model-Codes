@@ -1,0 +1,19 @@
+# ======
+#bottomwall.stl:
+solid Mesh
+facet normal 0.000000 0.000000 1.000000
+outer loop
+vertex -13.27 -13.13.27  -32.5
+vertex -13.27 13.27 -32.5
+vertex 13.27 13.27 -32.5
+endloop
+endfacet
+facet normal 0.000000 0.000000 1.000000
+outer loop
+vertex 13.27 -13.27 -32.5 
+vertex -13.27 -13.27 -32.5 
+vertex  13.27 13.27 -32.5 
+endloop
+endfacet
+endsolid Mesh
+#=====

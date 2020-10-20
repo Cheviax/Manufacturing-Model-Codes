@@ -88,29 +88,29 @@ fix             m1 all property/global youngsModulus peratomtype 2e6 200e6 200e6
 fix             m2 all property/global poissonsRatio peratomtype 0.5 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
 fix             m3 all property/global coefficientRestitution peratomtypepair 9 ${CoR_CBD} ${CoR_12} ${CoR_12} ${CoR_12} ${CoR_12} ${CoR_12} ${CoR_12} ${CoR_13} ${CoR_14} &
                                                                                 ${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
-										${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
-										${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
-										${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
+																				${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
+																				${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
+																				${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
                                                                                 ${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
                                                                                 ${CoR_12} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_AM} ${CoR_23} ${CoR_24} &
                                                                                 ${CoR_13} ${CoR_23} ${CoR_23} ${CoR_23} ${CoR_23} ${CoR_23} ${CoR_23} ${CoR_Al} ${CoR_34} &
-										${CoR_14} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_34} ${CoR_St}
+																				${CoR_14} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_24} ${CoR_34} ${CoR_St}
 
 fix             m4 all property/global coefficientFriction peratomtypepair 9    ${CoF_CBD} ${CoF_12} ${CoF_12} ${CoF_12} ${CoF_12} ${CoF_12} ${CoF_12} ${CoF_13} ${CoF_14} &
                                                                                 ${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
-										${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
-										${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
-										${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
+																				${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
+																				${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
+																				${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
                                                                                 ${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
                                                                                 ${CoF_12} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_AM} ${CoF_23} ${CoF_24} &
                                                                                 ${CoF_13} ${CoF_23} ${CoF_23} ${CoF_23} ${CoF_23} ${CoF_23} ${CoF_23} ${CoF_Al} ${CoF_34} &
                                                                                 ${CoF_14} ${CoF_24} ${CoF_24} ${CoF_24} ${CoF_24} ${CoF_24} ${CoF_24} ${CoF_34} ${CoF_St}
 
-fix		m6 all property/global cohesionEnergyDensity peratomtypepair 9  ${CED_CBD} ${CED_12} ${CED_12} ${CED_12} ${CED_12} ${CED_12} ${CED_12} ${CED_13} ${CED_14} &
+fix		m5 all property/global cohesionEnergyDensity peratomtypepair 9  ${CED_CBD} ${CED_12} ${CED_12} ${CED_12} ${CED_12} ${CED_12} ${CED_12} ${CED_13} ${CED_14} &
                                                                                 ${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
-										${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
-										${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
-										${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
+																				${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
+																				${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
+																				${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
                                                                                 ${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
                                                                                 ${CED_12} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_AM} ${CED_23} ${CED_24} &
                                                                                 ${CED_13} ${CED_23} ${CED_23} ${CED_23} ${CED_23} ${CED_23} ${CED_23} ${CED_Al} ${CED_34} &
