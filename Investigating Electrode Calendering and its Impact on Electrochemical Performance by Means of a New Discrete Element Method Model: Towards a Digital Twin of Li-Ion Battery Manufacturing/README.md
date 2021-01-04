@@ -20,6 +20,4 @@ Please, to reproduce exactly the results reported in the afroementioned articles
 
 
 For any doubt do not hesitate to contact us (we will be happy to answer and help you!) :
-Teo Lombardo --> teo.lombardo@u-picardie.fr *OR* teo.lombardo3@gmail.com
-Alain Ngandjong --> alain.ngandjong@u-picardie.fr
 Alejandro A. Franco --> alejandro.franco@u-picardie.fr
