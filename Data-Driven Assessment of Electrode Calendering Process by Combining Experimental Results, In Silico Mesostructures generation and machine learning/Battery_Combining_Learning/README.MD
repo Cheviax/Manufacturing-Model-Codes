@@ -41,7 +41,7 @@ Pull requests are not allowed. For more informations about the code, please
  License
 ========================================================
 
-This project is licensed under the [GNU Public License](https://www.gnu.org/licenses/gpl-3.0.en.html)
+This project is licensed under the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) licence.
 
 DOI
 ========================================================
