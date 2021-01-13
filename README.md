@@ -6,7 +6,7 @@ Codes related to articles published by the ARTISTIC Project.
  
  Authors
  ========================================================
-  - **Marc Duquesnoy** , PhD
+  - **Marc Duquesnoy** , PhD (@MarcDuquesnoy), marc.duquesnoy@u-picardie.fr
   
  Contributors
 ========================================================
