@@ -13,12 +13,11 @@ Codes related to articles published by the ARTISTIC Project.
   - **Alejandro A. Franco** , Principal Investigator, alejandro.franco@u-picardie.fr
   - **Teo Lombardo** , PhD (@teolombrado), teo.lombardo@u-picardie.fr
   - **Alain Ngandjong**, Post-Doc, alain.ngandjong@u-picardie.fr
-  - **Emiliano Primo** , Post-Doc (@primo-emiliano), 
-  - **Alain Ngandjong** , Post-Doc
-  - **Mehdi Chouchane** , PhD
+  - **Emiliano Primo** , Post-Doc (@primo-emiliano),
+  - **Mehdi Chouchane** , PhD, mehdi.chouchane@u-picardie.fr
   - **Marc Duquesnoy** , PhD (@MarcDuquesnoy), marc.duquesnoy@u-picardie.fr
-  - **Hassna El-Bousiydi** , PhD (@helbousiydy)
-  - **Abbos Shodiev**, PhD
+  - **Hassna El-Bousiydi** , PhD (@helbousiydy), hassna.el.bousiydi@u-picardie.fr
+  - **Abbos Shodiev**, PhD, abbos.shodiev@u-picardie.fr
  
  License
 ========================================================
