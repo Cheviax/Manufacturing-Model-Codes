@@ -1,0 +1,721 @@
+#Slurry : Active materials (NMC) + Carbon Binder Domain(CBD) (PVDF + Carbon black)
+
+atom_modify map array
+units           micro
+dimension       3
+atom_style      sphere
+boundary        p p m
+read_data coord_out_slurry_94.data
+group CBD_ini type 1 2 3 
+variable n_CBD_ini equal count(CBD_ini)
+print "n_CBD_ini equal ${n_CBD_ini}" screen yes
+
+variable a_max equal 1000
+label loop
+variable a loop ${a_max}
+comm_modify vel yes
+
+print "loop1 --> a = ${a}" screen yes
+
+if "${a} > 1" then &
+"atom_modify map array"
+
+if "${a} > 1" then &
+"boundary        p p m"
+
+if "${a} > 1" then &
+"read_restart restart.*"
+
+variable evap_rate1 equal 1
+
+variable evap_rate2_ini equal 1
+variable evap_rate2_fin equal 1.2
+variable evap_rate2 equal v_evap_rate2_ini+((v_a/v_a_max)*(v_evap_rate2_fin-v_evap_rate2_ini))
+print "evap_rate2 equal ${evap_rate2} at iteration ${a}" screen yes
+
+variable evap_rate3_ini equal 1
+variable evap_rate3_fin equal 1.8
+variable evap_rate3 equal v_evap_rate3_ini+((v_a/v_a_max)*(v_evap_rate3_fin-v_evap_rate3_ini))
+print "evap_rate3 equal ${evap_rate3} at iteration ${a}" screen yes
+
+if "${a} == 1" then &
+"variable freeze_point equal v_a_max"
+
+if '${a} >1' then &
+'print "Porosity equal ${Porosity}" screen yes'
+
+# Another way to fix the end point is fixing a certain amount of slurry removed. A bit tricky to do here but easy for graphite
+if '${a} >1' then &
+'if "${Porosity} <= 0.42" then &
+"variable freeze_point equal v_a-1"'
+
+if '${a} >1' then &
+'if "${Porosity} > 0.42 && ${freeze_point} == ${a_max}" then &
+"variable freeze_point equal v_a_max"'
+ 
+#variable freeze_par equal 0.7
+#variable freeze_point equal round(v_a_max*v_freeze_par)
+#print "freeze_point = ${freeze_point}"
+
+if "${a} > ${freeze_point}" then &
+"print 'freezed at a = ${a}' screen yes"
+
+# Particles parameters
+#Active Material
+
+#Diameter
+# diameter exp
+variable    d_e_a1 equal 2.5
+variable    d_e_a2 equal 3.5
+variable    d_e_a3 equal 4.5
+variable    d_e_a4 equal 5.86
+variable    d_e_a5 equal 8.28
+variable    d_e_a6 equal 10.35
+
+# LJ potential
+if "${a} <= ${freeze_point}" then &
+"variable    epsi_am_fin equal 100"
+if "${a} > ${freeze_point}" then &
+"variable    epsi_am_fin equal 500"
+variable    epsi_am_ini equal 0.01
+variable    epsi_pre_am equal v_epsi_am_ini+((v_a/v_a_max)*(v_epsi_am_fin-v_epsi_am_ini))
+print "epsi_pre_am = ${epsi_pre_am}" screen yes
+
+print "ok" screen yes
+variable    epsi_a1 equal v_epsi_pre_am*(v_d_e_a1)
+variable    epsi_a2 equal v_epsi_pre_am*(v_d_e_a2)
+variable    epsi_a3 equal v_epsi_pre_am*(v_d_e_a3)
+variable    epsi_a4 equal v_epsi_pre_am*(v_d_e_a4)
+variable    epsi_a5 equal v_epsi_pre_am*(v_d_e_a5)
+variable    epsi_a6 equal v_epsi_pre_am*(v_d_e_a6)
+
+if "${a} <= ${freeze_point}" then &
+"variable    sig_am_fin equal 0.93"
+if "${a} > ${freeze_point}" then &
+"variable    sig_am_fin equal 0.93"
+variable    sig_am_ini equal 0.95 # To change for 96 !!!!!!
+variable    sig_pre_am equal v_sig_am_ini+((v_a/v_a_max)*(v_sig_am_fin-v_sig_am_ini))
+print "sig_pre_am = ${sig_pre_am}" screen yes
+
+variable    sig_a1 equal v_sig_pre_am*v_d_e_a1
+variable    sig_a2 equal v_sig_pre_am*v_d_e_a2
+variable    sig_a3 equal v_sig_pre_am*v_d_e_a3
+variable    sig_a4 equal v_sig_pre_am*v_d_e_a4
+variable    sig_a5 equal v_sig_pre_am*v_d_e_a5
+variable    sig_a6 equal v_sig_pre_am*v_d_e_a6
+
+variable rc_AM equal 2
+
+variable    rc_a1 equal v_rc_AM*v_d_e_a1
+variable    rc_a2 equal v_rc_AM*v_d_e_a2
+variable    rc_a3 equal v_rc_AM*v_d_e_a3
+variable    rc_a4 equal v_rc_AM*v_d_e_a4
+variable    rc_a5 equal v_rc_AM*v_d_e_a5
+variable    rc_a6 equal v_rc_AM*v_d_e_a6
+
+if "${a} <= ${freeze_point}" then &
+"variable    exp_par_fin equal 1.044"
+if "${a} > ${freeze_point}" then &
+"variable    exp_par_fin equal 1.02"
+variable    exp_par_ini equal 1.14
+variable    exp_par equal v_exp_par_ini+((v_a/v_a_max)*(v_exp_par_fin-v_exp_par_ini))
+print "exp_par = ${exp_par}" screen yes
+
+variable d_a1 equal v_exp_par*v_d_e_a1
+variable d_a2 equal v_exp_par*v_d_e_a2
+variable d_a3 equal v_exp_par*v_d_e_a3
+variable d_a4 equal v_exp_par*v_d_e_a4
+variable d_a5 equal v_exp_par*v_d_e_a5
+variable d_a6 equal v_exp_par*v_d_e_a6
+
+# GH potential
+
+variable    Rho_sol_a equal 4.65
+
+#CBD
+
+#Diameter
+#LJ parameter
+
+#if "${a} <= 500" then &
+#"variable    d_cb1_fin equal 2.28"
+#if "${a} > 500" then &
+
+variable    d_cb1_fin equal 1.3
+variable    d_cb1_ini equal 5.7 # To change for 96 !!!!!!
+variable    d_cb1 equal v_d_cb1_ini+((v_a/v_a_max)*v_evap_rate1*(v_d_cb1_fin-v_d_cb1_ini))
+if "${d_cb1} < ${d_cb1_fin}" then &
+"variable d_cb1 equal v_d_cb1_fin"  
+print "d_cb1 = ${d_cb1}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    epsi_factor1_fin equal 150"
+if "${a} > ${freeze_point}" then &
+"variable    epsi_factor1_fin equal 650"
+variable    epsi_factor1_ini equal 1
+variable    epsi_factor1 equal v_epsi_factor1_ini+((v_a/v_a_max)*v_evap_rate1*(v_epsi_factor1_fin-v_epsi_factor1_ini))
+if "${epsi_factor1} > ${epsi_factor1_fin}" then &
+"variable epsi_factor1 equal v_epsi_factor1_fin"
+variable    epsi_cb1 equal v_epsi_factor1*v_d_cb1
+print "epsi_factor1 = ${epsi_factor1}" screen yes
+
+#if "${a} <= 500" then &
+#"variable    d_cb2_fin equal 2.28"
+#if "${a} > 500" then &
+
+variable    d_cb2_fin equal 1.3
+variable    d_cb2_ini equal 5.7
+variable    d_cb2 equal v_d_cb2_ini+((v_a/v_a_max)*v_evap_rate2*(v_d_cb2_fin-v_d_cb2_ini))
+if "${d_cb2} < ${d_cb2_fin}" then &
+"variable d_cb2 equal v_d_cb2_fin"
+print "d_cb2 = ${d_cb2}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    epsi_factor2_fin equal 150"
+if "${a} > ${freeze_point}" then &
+"variable    epsi_factor2_fin equal 650"
+variable    epsi_factor2_ini equal 1
+variable    epsi_factor2 equal v_epsi_factor2_ini+((v_a/v_a_max)*v_evap_rate2*(v_epsi_factor2_fin-v_epsi_factor2_ini))
+if "${epsi_factor2} > ${epsi_factor2_fin}" then &
+"variable epsi_factor2 equal v_epsi_factor2_fin"
+variable    epsi_cb2 equal v_epsi_factor2*v_d_cb2
+print "epsi_factor2 = ${epsi_factor2}" screen yes
+
+#if "${a} <= 500" then &
+#"variable    d_cb3_fin equal 2.28"
+#if "${a} > 500" then &
+
+variable    d_cb3_fin equal 1.3
+variable    d_cb3_ini equal 5.7
+variable    d_cb3 equal v_d_cb3_ini+((v_a/v_a_max)*v_evap_rate3*(v_d_cb3_fin-v_d_cb3_ini))
+if "${d_cb3} < ${d_cb3_fin}" then &
+"variable d_cb3 equal v_d_cb3_fin"
+print "d_cb3 = ${d_cb3}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    epsi_factor3_fin equal 150"
+if "${a} > ${freeze_point}" then &
+"variable    epsi_factor3_fin equal 650"
+variable    epsi_factor3_ini equal 1
+variable    epsi_factor3 equal v_epsi_factor3_ini+((v_a/v_a_max)*v_evap_rate3*(v_epsi_factor3_fin-v_epsi_factor3_ini))
+if "${epsi_factor3} > ${epsi_factor3_fin}" then &
+"variable epsi_factor3 equal v_epsi_factor3_fin"
+variable    epsi_cb3 equal v_epsi_factor3*v_d_cb3
+print "epsi_factor3 = ${epsi_factor3}" screen yes
+
+variable    sig_cb equal 1.1
+variable    rc_cb  equal 2.2
+
+# GH potential
+#if "${a} <= 500" then &
+#"variable    Rho_cb1_fin equal 0.762"
+#if "${a} > 500" then &
+
+variable    Rho_cb1_fin equal 0.95
+variable    Rho_cb1_ini equal 0.008
+variable    Rho_cb1 equal v_Rho_cb1_ini+((v_a/v_a_max)*v_evap_rate1*(v_Rho_cb1_fin-v_Rho_cb1_ini))
+if "${Rho_cb1} > ${Rho_cb1_fin}" then &
+"variable Rho_cb1 equal v_Rho_cb1_fin"
+print "Rho_cb1 = ${Rho_cb1}" screen yes
+
+#if "${a} <= 500" then &
+#"variable    Rho_cb2_fin equal 0.762"
+#if "${a} > 500" then &
+
+variable    Rho_cb2_fin equal 0.95
+variable    Rho_cb2_ini equal 0.008
+variable    Rho_cb2 equal v_Rho_cb2_ini+((v_a/v_a_max)*v_evap_rate2*(v_Rho_cb2_fin-v_Rho_cb2_ini))
+if "${Rho_cb2} > ${Rho_cb2_fin}" then &
+"variable Rho_cb2 equal v_Rho_cb2_fin"
+print "Rho_cb2 = ${Rho_cb2}" screen yes
+
+#if "${a} <= 500" then &
+#"variable    Rho_cb3_fin equal 0.762"
+#if "${a} > 500" then &
+
+variable    Rho_cb3_fin equal 0.95
+variable    Rho_cb3_ini equal 0.008
+variable    Rho_cb3 equal v_Rho_cb3_ini+((v_a/v_a_max)*v_evap_rate3*(v_Rho_cb3_fin-v_Rho_cb3_ini))
+if "${Rho_cb3} > ${Rho_cb3_fin}" then &
+"variable Rho_cb3 equal v_Rho_cb3_fin"
+print "Rho_cb3 = ${Rho_cb3}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    Kn_fin equal 401.6"
+if "${a} > ${freeze_point}" then &
+"variable    Kn_fin equal 950"
+variable    Kn_ini equal 7
+variable    Kn equal v_Kn_ini+((v_a/v_a_max)*(v_Kn_fin-v_Kn_ini))
+print "Kn = ${Kn}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    KtKn_fin equal 1.263835294"
+if "${a} > ${freeze_point}" then &
+"variable    KtKn_fin equal 1.235294118"
+variable    KtKn_ini equal 1.378
+variable    KtKn equal v_KtKn_ini+((v_a/v_a_max)*(v_KtKn_fin-v_KtKn_ini))
+variable    Kt equal v_KtKn*v_Kn
+print "Kt = ${Kt}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    Gamman_fin equal 15.6"
+if "${a} > ${freeze_point}" then &
+"variable    Gamman_fin equal 10"
+variable    Gamman_ini equal 45
+variable    Gamman equal v_Gamman_ini+((v_a/v_a_max)*(v_Gamman_fin-v_Gamman_ini))
+print "Gamman = ${Gamman}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    GammatGamman_fin equal 0.91778817"
+if "${a} > ${freeze_point}" then &
+"variable    GammatGamman_fin equal 0.907485213"
+variable    GammatGamman_ini equal 0.959
+variable    GammatGamman equal v_GammatGamman_ini+((v_a/v_a_max)*(v_GammatGamman_fin-v_GammatGamman_ini))
+variable    Gammat equal v_GammatGamman*v_Gamman
+print "Gammat = ${Gammat}" screen yes
+
+if "${a} <= ${freeze_point}" then &
+"variable    Xu_fin equal 12"
+if "${a} > ${freeze_point}" then &
+"variable    Xu_fin equal 15"
+variable    Xu_ini equal 0.015
+variable    Xu equal v_Xu_ini+((v_a/v_a_max)*(v_Xu_fin-v_Xu_ini))
+print "Xu = ${Xu}" screen yes
+
+
+variable particles equal count(all)
+print "particles equal ${particles}" screen yes
+
+variable z_max equal bound(all,zmax)
+
+variable lz_particle_final equal v_z_max-zlo
+print "lz_particle_final equal ${lz_particle_final}" screen yes
+
+variable l1z equal (v_lz_particle_final/3)+zlo
+variable l2z equal ((2/3)*v_lz_particle_final)+zlo
+print "l1z = ${l1z}" screen yes
+print "l2z = ${l2z}" screen yes
+
+label loop1
+variable i loop 1 ${particles}
+variable z_position_i equal z[${i}]
+variable type_i equal type[${i}]
+
+if "${z_position_i} > ${l2z} && ${type_i} <= 3 " then &
+"set atom ${i} type 3 diameter ${d_cb3}  density ${Rho_cb3}"
+
+if "${z_position_i} <= ${l1z} && ${type_i} <= 3 " then &
+"set atom ${i} type 1 diameter ${d_cb1}  density ${Rho_cb1}"
+
+if "${z_position_i} > ${l1z} && ${z_position_i} <= ${l2z} && ${type_i} <= 3 " then &
+"set atom ${i} type 2 diameter ${d_cb2}  density ${Rho_cb2}"
+
+next i
+jump in_evaporation.run loop1
+
+
+set type 4 diameter ${d_a1}  density ${Rho_sol_a} 
+set type 5 diameter ${d_a2}  density ${Rho_sol_a} 
+set type 6 diameter ${d_a3}  density ${Rho_sol_a} 
+set type 7 diameter ${d_a4}  density ${Rho_sol_a} 
+set type 8 diameter ${d_a5}  density ${Rho_sol_a} 
+set type 9 diameter ${d_a6}  density ${Rho_sol_a} 
+
+neighbor        3.0 bin
+
+#Groups
+group CBD type 1 2 3
+group CBD1 type 1
+group CBD2 type 2
+group CBD3 type 3
+group AM1 type 4
+group AM2 type 5
+group AM3 type 6
+group AM4 type 7
+group AM5 type 8
+group AM6 type 9
+
+#Masses
+variable mass_CBD1 equal mass(CBD1)/count(CBD1)
+variable mass_CBD2 equal mass(CBD2)/count(CBD2)
+variable mass_CBD3 equal mass(CBD3)/count(CBD3)
+variable mass_AM1 equal mass(AM1)/count(AM1)
+variable mass_AM2 equal mass(AM2)/count(AM2)
+variable mass_AM3 equal mass(AM3)/count(AM3)
+variable mass_AM4 equal mass(AM4)/count(AM4)
+variable mass_AM5 equal mass(AM5)/count(AM5)
+variable mass_AM6 equal mass(AM6)/count(AM6) 
+
+#Surfaces
+variable pi equal 3.14159
+variable surface_CBD1 equal 0.25*v_pi*(v_d_cb1_fin^2)
+variable surface_CBD2 equal 0.25*v_pi*(v_d_cb2_fin^2)
+variable surface_CBD3 equal 0.25*v_pi*(v_d_cb3_fin^2)
+variable surface_AM1 equal 0.25*v_pi*(v_d_e_a1^2)
+variable surface_AM2 equal 0.25*v_pi*(v_d_e_a2^2)
+variable surface_AM3 equal 0.25*v_pi*(v_d_e_a3^2)
+variable surface_AM4 equal 0.25*v_pi*(v_d_e_a4^2)
+variable surface_AM5 equal 0.25*v_pi*(v_d_e_a5^2)
+variable surface_AM6 equal 0.25*v_pi*(v_d_e_a6^2)
+
+#An idea could be to calculate the mass of the electrode each iteration as the sum of the masses of all the particles (not critical probably, but we could check)
+variable Box_Volume equal lx*ly*v_lz_particle_final*1E-12
+variable Porosity equal ((lx*ly*v_lz_particle_final)-27543.51377)/(lx*ly*v_lz_particle_final)
+variable mass_electrode_g equal 1.03207E-07
+variable Density equal v_mass_electrode_g/v_Box_Volume
+
+# AM-CBD pair parameters
+
+pair_style     hybrid/overlay lj/sf ${rc_a6} &
+               gran/hertz/history  ${Kn} ${Kt} ${Gamman} ${Gammat} ${Xu} 1 
+
+#pair_modify pair lj/sf mix arithmetic #geometric 
+
+pair_coeff      1 1 lj/sf ${epsi_cb1} ${sig_cb} ${rc_cb}
+pair_coeff      2 2 lj/sf ${epsi_cb2} ${sig_cb} ${rc_cb}
+pair_coeff      3 3 lj/sf ${epsi_cb3} ${sig_cb} ${rc_cb}
+pair_coeff      4 4 lj/sf ${epsi_a1} ${sig_a1} ${rc_a1}
+pair_coeff      5 5 lj/sf ${epsi_a2} ${sig_a2} ${rc_a2}
+pair_coeff      6 6 lj/sf ${epsi_a3} ${sig_a3} ${rc_a3}
+pair_coeff      7 7 lj/sf ${epsi_a4} ${sig_a4} ${rc_a4}
+pair_coeff      8 8 lj/sf ${epsi_a5} ${sig_a5} ${rc_a5}
+pair_coeff      9 9 lj/sf ${epsi_a6} ${sig_a6} ${rc_a6}
+
+
+# interaction mix 1
+variable        epsi_12 equal (v_epsi_cb1*v_epsi_cb2)^(1/2)
+variable        epsi_13 equal (v_epsi_cb1*v_epsi_cb3)^(1/2)
+variable        epsi_14 equal (v_epsi_cb1*v_epsi_a1)^(1/2)
+variable        epsi_15 equal (v_epsi_cb1*v_epsi_a2)^(1/2)
+variable        epsi_16 equal (v_epsi_cb1*v_epsi_a3)^(1/2)
+variable        epsi_17 equal (v_epsi_cb1*v_epsi_a4)^(1/2)
+variable        epsi_18 equal (v_epsi_cb1*v_epsi_a5)^(1/2)
+variable        epsi_19 equal (v_epsi_cb1*v_epsi_a6)^(1/2)
+
+variable        sig_12 equal (v_sig_cb+v_sig_cb)/2
+variable        sig_13 equal (v_sig_cb+v_sig_cb)/2
+variable        sig_14 equal (v_sig_cb+v_sig_a1)/2
+variable        sig_15 equal (v_sig_cb+v_sig_a2)/2
+variable        sig_16 equal (v_sig_cb+v_sig_a3)/2
+variable        sig_17 equal (v_sig_cb+v_sig_a4)/2
+variable        sig_18 equal (v_sig_cb+v_sig_a5)/2
+variable        sig_19 equal (v_sig_cb+v_sig_a6)/2
+
+variable        rc_12 equal (v_rc_cb+v_rc_cb)/2
+variable        rc_13 equal (v_rc_cb+v_rc_cb)/2
+variable        rc_14 equal (v_rc_cb+v_rc_a1)/2
+variable        rc_15 equal (v_rc_cb+v_rc_a2)/2
+variable        rc_16 equal (v_rc_cb+v_rc_a3)/2
+variable        rc_17 equal (v_rc_cb+v_rc_a4)/2
+variable        rc_18 equal (v_rc_cb+v_rc_a5)/2
+variable        rc_19 equal (v_rc_cb+v_rc_a6)/2
+
+#interaction mix 2
+variable        epsi_23 equal (v_epsi_cb2*v_epsi_cb3)^(1/2)
+variable        epsi_24 equal (v_epsi_cb2*v_epsi_a1)^(1/2)
+variable        epsi_25 equal (v_epsi_cb2*v_epsi_a2)^(1/2)
+variable        epsi_26 equal (v_epsi_cb2*v_epsi_a3)^(1/2)
+variable        epsi_27 equal (v_epsi_cb2*v_epsi_a4)^(1/2)
+variable        epsi_28 equal (v_epsi_cb2*v_epsi_a5)^(1/2)
+variable        epsi_29 equal (v_epsi_cb2*v_epsi_a6)^(1/2)
+
+variable        sig_23 equal (v_sig_cb+v_sig_cb)/2
+variable        sig_24 equal (v_sig_cb+v_sig_a1)/2
+variable        sig_25 equal (v_sig_cb+v_sig_a2)/2
+variable        sig_26 equal (v_sig_cb+v_sig_a3)/2
+variable        sig_27 equal (v_sig_cb+v_sig_a4)/2
+variable        sig_28 equal (v_sig_cb+v_sig_a5)/2
+variable        sig_29 equal (v_sig_cb+v_sig_a6)/2
+
+variable        rc_23 equal (v_rc_cb+v_rc_cb)/2
+variable        rc_24 equal (v_rc_cb+v_rc_a1)/2
+variable        rc_25 equal (v_rc_cb+v_rc_a2)/2
+variable        rc_26 equal (v_rc_cb+v_rc_a3)/2
+variable        rc_27 equal (v_rc_cb+v_rc_a4)/2
+variable        rc_28 equal (v_rc_cb+v_rc_a5)/2
+variable        rc_29 equal (v_rc_cb+v_rc_a6)/2
+
+#interaction mix 3 
+
+variable        epsi_34 equal (v_epsi_cb3*v_epsi_a1)^(1/2)
+variable        epsi_35 equal (v_epsi_cb3*v_epsi_a2)^(1/2)
+variable        epsi_36 equal (v_epsi_cb3*v_epsi_a3)^(1/2)
+variable        epsi_37 equal (v_epsi_cb3*v_epsi_a4)^(1/2)
+variable        epsi_38 equal (v_epsi_cb3*v_epsi_a5)^(1/2)
+variable        epsi_39 equal (v_epsi_cb3*v_epsi_a6)^(1/2)
+
+variable        sig_34 equal (v_sig_cb+v_sig_a1)/2
+variable        sig_35 equal (v_sig_cb+v_sig_a2)/2
+variable        sig_36 equal (v_sig_cb+v_sig_a3)/2
+variable        sig_37 equal (v_sig_cb+v_sig_a4)/2
+variable        sig_38 equal (v_sig_cb+v_sig_a5)/2
+variable        sig_39 equal (v_sig_cb+v_sig_a6)/2
+
+variable        rc_34 equal (v_rc_cb+v_rc_a1)/2
+variable        rc_35 equal (v_rc_cb+v_rc_a2)/2
+variable        rc_36 equal (v_rc_cb+v_rc_a3)/2
+variable        rc_37 equal (v_rc_cb+v_rc_a4)/2
+variable        rc_38 equal (v_rc_cb+v_rc_a5)/2
+variable        rc_39 equal (v_rc_cb+v_rc_a6)/2
+
+#interaction mix 4
+variable        epsi_45 equal (v_epsi_a1*v_epsi_a2)^(1/2)
+variable        epsi_46 equal (v_epsi_a1*v_epsi_a3)^(1/2)
+variable        epsi_47 equal (v_epsi_a1*v_epsi_a4)^(1/2)
+variable        epsi_48 equal (v_epsi_a1*v_epsi_a5)^(1/2)
+variable        epsi_49 equal (v_epsi_a1*v_epsi_a6)^(1/2)
+
+variable        sig_45 equal (v_sig_a1+v_sig_a2)/2
+variable        sig_46 equal (v_sig_a1+v_sig_a3)/2
+variable        sig_47 equal (v_sig_a1+v_sig_a4)/2
+variable        sig_48 equal (v_sig_a1+v_sig_a5)/2
+variable        sig_49 equal (v_sig_a1+v_sig_a6)/2
+
+variable        rc_45 equal (v_rc_a1+v_rc_a2)/2
+variable        rc_46 equal (v_rc_a1+v_rc_a3)/2
+variable        rc_47 equal (v_rc_a1+v_rc_a4)/2
+variable        rc_48 equal (v_rc_a1+v_rc_a5)/2
+variable        rc_49 equal (v_rc_a1+v_rc_a6)/2
+
+#interaction mix 5
+variable        epsi_56 equal (v_epsi_a2*v_epsi_a3)^(1/2)
+variable        epsi_57 equal (v_epsi_a2*v_epsi_a4)^(1/2)
+variable        epsi_58 equal (v_epsi_a2*v_epsi_a5)^(1/2)
+variable        epsi_59 equal (v_epsi_a2*v_epsi_a6)^(1/2)
+
+variable        sig_56 equal (v_sig_a2+v_sig_a3)/2
+variable        sig_57 equal (v_sig_a2+v_sig_a4)/2
+variable        sig_58 equal (v_sig_a2+v_sig_a5)/2
+variable        sig_59 equal (v_sig_a2+v_sig_a6)/2
+
+variable        rc_56 equal (v_rc_a2+v_rc_a3)/2
+variable        rc_57 equal (v_rc_a2+v_rc_a4)/2
+variable        rc_58 equal (v_rc_a2+v_rc_a5)/2
+variable        rc_59 equal (v_rc_a2+v_rc_a6)/2
+
+#interaction mix 6
+variable        epsi_67 equal (v_epsi_a3*v_epsi_a4)^(1/2)
+variable        epsi_68 equal (v_epsi_a3*v_epsi_a5)^(1/2)
+variable        epsi_69 equal (v_epsi_a3*v_epsi_a6)^(1/2)
+
+variable        sig_67 equal (v_sig_a3+v_sig_a4)/2
+variable        sig_68 equal (v_sig_a3+v_sig_a5)/2
+variable        sig_69 equal (v_sig_a3+v_sig_a6)/2
+
+variable        rc_67 equal (v_rc_a3+v_rc_a4)/2
+variable        rc_68 equal (v_rc_a3+v_rc_a5)/2
+variable        rc_69 equal (v_rc_a3+v_rc_a6)/2
+
+#interaction mix 7
+variable        epsi_78 equal (v_epsi_a4*v_epsi_a5)^(1/2)
+variable        epsi_79 equal (v_epsi_a4*v_epsi_a6)^(1/2)
+
+variable        sig_78 equal (v_sig_a4+v_sig_a5)/2
+variable        sig_79 equal (v_sig_a4+v_sig_a6)/2
+
+variable        rc_78 equal (v_rc_a4+v_rc_a5)/2
+variable        rc_79 equal (v_rc_a4+v_rc_a6)/2
+
+#interaction mix 8
+variable        epsi_89 equal (v_epsi_a5*v_epsi_a6)^(1/2)
+
+variable        sig_89 equal (v_sig_a5+v_sig_a6)/2
+
+variable        rc_89 equal (v_rc_a5+v_rc_a6)/2
+
+#Pair coefficients
+pair_coeff      1 2 lj/sf ${epsi_12} ${sig_12} ${rc_12}
+pair_coeff      1 3 lj/sf ${epsi_13} ${sig_13} ${rc_13}
+pair_coeff      1 4 lj/sf ${epsi_14} ${sig_14} ${rc_14}
+pair_coeff      1 5 lj/sf ${epsi_15} ${sig_15} ${rc_15}
+pair_coeff      1 6 lj/sf ${epsi_16} ${sig_16} ${rc_16}
+pair_coeff      1 7 lj/sf ${epsi_17} ${sig_17} ${rc_17}
+pair_coeff      1 8 lj/sf ${epsi_18} ${sig_18} ${rc_18}
+pair_coeff      1 9 lj/sf ${epsi_19} ${sig_19} ${rc_19}
+
+pair_coeff      2 3 lj/sf ${epsi_23} ${sig_23} ${rc_23}
+pair_coeff      2 4 lj/sf ${epsi_24} ${sig_24} ${rc_24}
+pair_coeff      2 5 lj/sf ${epsi_25} ${sig_25} ${rc_25}
+pair_coeff      2 6 lj/sf ${epsi_26} ${sig_26} ${rc_26}
+pair_coeff      2 7 lj/sf ${epsi_27} ${sig_27} ${rc_27}
+pair_coeff      2 8 lj/sf ${epsi_28} ${sig_28} ${rc_28}
+pair_coeff      2 9 lj/sf ${epsi_29} ${sig_29} ${rc_29}
+
+pair_coeff      3 4 lj/sf ${epsi_34} ${sig_34} ${rc_34}
+pair_coeff      3 5 lj/sf ${epsi_35} ${sig_35} ${rc_35}
+pair_coeff      3 6 lj/sf ${epsi_36} ${sig_36} ${rc_36}
+pair_coeff      3 7 lj/sf ${epsi_37} ${sig_37} ${rc_37}
+pair_coeff      3 8 lj/sf ${epsi_38} ${sig_38} ${rc_38}
+pair_coeff      3 9 lj/sf ${epsi_39} ${sig_39} ${rc_39}
+
+pair_coeff      4 5 lj/sf ${epsi_45} ${sig_45} ${rc_45}
+pair_coeff      4 6 lj/sf ${epsi_46} ${sig_46} ${rc_46}
+pair_coeff      4 7 lj/sf ${epsi_47} ${sig_47} ${rc_47}
+pair_coeff      4 8 lj/sf ${epsi_48} ${sig_48} ${rc_48}
+pair_coeff      4 9 lj/sf ${epsi_49} ${sig_49} ${rc_49}
+
+pair_coeff      5 6 lj/sf ${epsi_56} ${sig_56} ${rc_56}
+pair_coeff      5 7 lj/sf ${epsi_57} ${sig_57} ${rc_57}
+pair_coeff      5 8 lj/sf ${epsi_58} ${sig_58} ${rc_58}
+pair_coeff      5 9 lj/sf ${epsi_59} ${sig_59} ${rc_59}
+
+pair_coeff      6 7 lj/sf ${epsi_67} ${sig_67} ${rc_67}
+pair_coeff      6 8 lj/sf ${epsi_68} ${sig_68} ${rc_68}
+pair_coeff      6 9 lj/sf ${epsi_69} ${sig_69} ${rc_69}
+
+pair_coeff      7 8 lj/sf ${epsi_78} ${sig_78} ${rc_78}
+pair_coeff      7 9 lj/sf ${epsi_79} ${sig_79} ${rc_79}
+
+pair_coeff      8 9 lj/sf ${epsi_89} ${sig_89} ${rc_89}
+
+pair_coeff    * * gran/hertz/history
+
+variable added_dist equal 1
+variable plane_z_up equal zhi+v_added_dist
+variable plane_z_down equal zlo-v_added_dist
+if "${a} == 1" then &
+"print 'plane_z_up equal ${plane_z_up}' screen yes"
+if "${a} == 1" then &
+"print 'plane_z_down equal ${plane_z_down}' screen yes"
+#Planes
+fix wall all wall/gran hertz/history 150000 NULL 30 NULL 15 1 zplane ${plane_z_down} ${plane_z_up}
+
+timestep        0.0001
+
+thermo 10000
+compute mytemp all temp/sphere
+compute mypress all pressure mytemp
+compute ke_rot all erotate/sphere
+
+
+thermo_style    custom step temp c_mytemp pe ke c_ke_rot press pzz c_mypress vol lx ly lz 
+
+
+dump 1  all custom 500000 dump.com_*.atom id type x y z radius
+
+if "${a} <= ${freeze_point}" then &
+"fix NVT all nvt/sphere temp 298.15 353.15 0.7"
+if "${a} > ${freeze_point}" then &
+"fix NVT CBD nvt/sphere temp 353.15 355 0.3"
+
+if "${a} > ${freeze_point}" then &
+"print 'NVT CBD at ${a}' screen yes"
+
+variable run equal 100000
+variable output_time equal (v_a*v_run)
+compute myrdf all rdf 200 4*9 1*3 4*9 4*9 1*3 1*3
+#fix 1 all ave/time 1 1 ${output_time}  v_Porosity file porosity mode scalar
+fix 2 all ave/time 1 1 ${output_time} v_Density file dried_electrode_density mode scalar
+fix 3 all ave/time 1 1 ${output_time} c_myrdf[*] file rdf_dried_electrode.rdf mode vector
+
+variable atmospheric_pressure_Pa equal 101325
+variable Force_atm_max equal v_atmospheric_pressure_Pa*(lx*ly*1E-3)*(-1)
+print "Force_atm_max equal ${Force_atm_max}" screen yes
+
+#variable Force_atm_CBD1 equal v_atmospheric_pressure_Pa*(v_surface_CBD1*1E-3)*(-1)
+#variable Force_atm_CBD2 equal v_atmospheric_pressure_Pa*(v_surface_CBD2*1E-3)*(-1)
+#variable Force_atm_CBD3 equal v_atmospheric_pressure_Pa*(v_surface_CBD3*1E-3)*(-1)
+#variable Force_atm_AM1 equal v_atmospheric_pressure_Pa*(v_surface_AM1*1E-3)*(-1)
+#variable Force_atm_AM2 equal v_atmospheric_pressure_Pa*(v_surface_AM2*1E-3)*(-1)
+#variable Force_atm_AM3 equal v_atmospheric_pressure_Pa*(v_surface_AM3*1E-3)*(-1)
+#variable Force_atm_AM4 equal v_atmospheric_pressure_Pa*(v_surface_AM4*1E-3)*(-1)
+#variable Force_atm_AM5 equal v_atmospheric_pressure_Pa*(v_surface_AM5*1E-3)*(-1)
+#variable Force_atm_AM6 equal v_atmospheric_pressure_Pa*(v_surface_AM6*1E-3)*(-1)
+
+variable n_CBD1 equal count(CBD1)
+variable n_CBD2 equal count(CBD2)
+variable n_CBD3 equal count(CBD3)
+variable n_AM1 equal count(AM1)
+variable n_AM2 equal count(AM2)
+variable n_AM3 equal count(AM3)
+variable n_AM4 equal count(AM4)
+variable n_AM5 equal count(AM5)
+variable n_AM6 equal count(AM6)
+
+print "Count AMs ${n_AM1}, ${n_AM2}, ${n_AM3}, ${n_AM4}, ${n_AM5}, ${n_AM6}" screen yes
+
+variable Surface_total_CBD1 equal v_n_CBD1*v_surface_CBD1
+variable Surface_total_CBD2 equal v_n_CBD2*v_surface_CBD2
+variable Surface_total_CBD3 equal v_n_CBD3*v_surface_CBD3
+variable Surface_total_AM1 equal v_n_AM1*v_surface_AM1
+variable Surface_total_AM2 equal v_n_AM2*v_surface_AM2
+variable Surface_total_AM3 equal v_n_AM3*v_surface_AM3
+variable Surface_total_AM4 equal v_n_AM4*v_surface_AM4
+variable Surface_total_AM5 equal v_n_AM5*v_surface_AM5
+variable Surface_total_AM6 equal v_n_AM6*v_surface_AM6
+
+#variable Surface_total_CBDs equal v_Surface_total_CBD1+v_Surface_total_CBD2+v_Surface_total_CBD3
+variable Surface_total_CBDs equal v_n_CBD_ini*v_surface_CBD3
+variable Surface_total_AMs equal v_Surface_total_AM1+v_Surface_total_AM2+v_Surface_total_AM3+v_Surface_total_AM4+v_Surface_total_AM5+v_Surface_total_AM6
+
+variable Surface_total equal v_Surface_total_CBDs+v_Surface_total_AMs
+
+variable Force_atm_CBD1 equal v_Force_atm_max*(v_surface_CBD1/v_Surface_total)
+variable Force_atm_CBD2 equal v_Force_atm_max*(v_surface_CBD2/v_Surface_total)
+variable Force_atm_CBD3 equal v_Force_atm_max*(v_surface_CBD3/v_Surface_total)
+variable Force_atm_AM1 equal v_Force_atm_max*(v_surface_AM1/v_Surface_total)
+variable Force_atm_AM2 equal v_Force_atm_max*(v_surface_AM2/v_Surface_total)
+variable Force_atm_AM3 equal v_Force_atm_max*(v_surface_AM3/v_Surface_total)
+variable Force_atm_AM4 equal v_Force_atm_max*(v_surface_AM4/v_Surface_total)
+variable Force_atm_AM5 equal v_Force_atm_max*(v_surface_AM5/v_Surface_total)
+variable Force_atm_AM6 equal v_Force_atm_max*(v_surface_AM6/v_Surface_total)
+
+variable gravity equal 9.80665E-6
+fix grav all gravity v_gravity vector 0 0 -1
+
+fix atm_CBD1 CBD1 addforce 0 0 v_Force_atm_CBD1 every 1
+fix atm_CBD2 CBD2 addforce 0 0 v_Force_atm_CBD2 every 1
+fix atm_CBD3 CBD3 addforce 0 0 v_Force_atm_CBD3 every 1
+fix atm_AM1 AM1 addforce 0 0 v_Force_atm_AM1 every 1
+fix atm_AM2 AM2 addforce 0 0 v_Force_atm_AM2 every 1
+fix atm_AM3 AM3 addforce 0 0 v_Force_atm_AM3 every 1
+fix atm_AM4 AM4 addforce 0 0 v_Force_atm_AM4 every 1
+fix atm_AM5 AM5 addforce 0 0 v_Force_atm_AM5 every 1
+fix atm_AM6 AM6 addforce 0 0 v_Force_atm_AM6 every 1
+
+print 'Force_atm_CBD1 equal ${Force_atm_CBD1}' screen yes
+print 'Force_atm_CBD2 equal ${Force_atm_CBD2}' screen yes
+print 'Force_atm_CBD3 equal ${Force_atm_CBD3}' screen yes
+print 'Force_atm_AM1 equal ${Force_atm_AM1}' screen yes
+print 'Force_atm_AM2 equal ${Force_atm_AM2}' screen yes
+print 'Force_atm_AM3 equal ${Force_atm_AM3}' screen yes
+print 'Force_atm_AM4 equal ${Force_atm_AM4}' screen yes
+print 'Force_atm_AM5 equal ${Force_atm_AM5}' screen yes
+print 'Force_atm_AM6 equal ${Force_atm_AM6}' screen yes
+
+run ${run}
+
+write_restart restart.*
+if "${a} == ${a_max}" then &
+"write_data coord_out_dried-electrode.data"
+
+unfix NVT
+unfix atm_CBD1
+unfix atm_CBD2
+unfix atm_CBD3
+unfix atm_AM1
+unfix atm_AM2
+unfix atm_AM3
+unfix atm_AM4
+unfix atm_AM5
+unfix atm_AM6
+
+group CBD delete
+group CBD1 delete
+group CBD2 delete
+group CBD3 delete
+group AM1 delete
+group AM2 delete
+group AM3 delete
+group AM4 delete
+group AM5 delete
+group AM6 delete
+
+clear
+
+next a
+jump in_evaporation.run loop
+
+# --------------------End of Simulation- ----------------------------- #
+  
+
