@@ -1,12 +1,12 @@
 #!/bin/sh
 #SBATCH --job-name=lammps
-#SBATCH --partition=midmem                      # submission queue
-#SBATCH --time=40-0:00:00                        # 1-1 means one day and one hour -> here 20min
+#SBATCH --partition=normal                      # submission queue
+#SBATCH --time=2-0:00:00                        # 1-1 means one day and one hour -> here 20min
 #SBATCH --mail-type=END
 ##SBATCH --mail-user=alain.ngandjong@u-picardie.fr       #e-mail notification
 #SBATCH --output=job_seq-%j.out         # if --error is absent, includes alsothe errors
 #SBATCH --nodes=1      # 2 cpus
-#SBATCH --ntasks-per-node=40
+#SBATCH --ntasks-per-node=20
 ##SBATCH --cpus=10
 #SBATCH --mem=15G                                # T-tera, G-giga, M-mega
 
@@ -48,6 +48,10 @@ echo
 
 module load openmpi/intel-opa/gcc
 module load lammps
+
+python3.6 Reformatting_cal_electrode.py
+
+sleep 10
 
 mpirun -mca btl ^openib -np $SLURM_NPROCS lmp_mpi < in_cal.run
 
