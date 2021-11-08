@@ -1,0 +1,5 @@
+This code allows reproducing the computational procedure adopted in the context of “Lombardo, T.; Ngandjong, A. C.; Belhcen, A.; Franco, A. A. Carbon-Binder Migration: A Three-Dimensional Evaporation Model for Lithium Ion Batteries. Energy Storage Mater. 2021. https://doi.org/https://doi.org/10.1016/j.ensm.2021.09.015.”
+
+The slurry structure reported here is the one adopted for obtaining the results reported in the main manuscript, and the code is the one associated to the Relative shrinking factor (RFS) 2 equal to 1.2, and RSF3 equal to 1.8. These parameters can be tuned by assigning a different value to the variables “evap_rate2_fin” and “evap_rate3_fin”, respectively.
+
+A similar but more generizable code can be found in https://github.com/ARTISTIC-ERC/Manufacturing-Model-Codes/tree/master/Updated_version/Drying/Heterogeneous
