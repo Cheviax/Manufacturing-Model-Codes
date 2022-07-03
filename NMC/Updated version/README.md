@@ -2,9 +2,7 @@ The codes allow reproducing the computational workflow available in the "online 
 
 If you use these codes, please cite our publications listed in the ARTISTIC project computational portal, which includes: 
 
-https://chemistry-europe.onlinelibrary.wiley.com/doi/full/10.1002/batt.202100324
-https://www.sciencedirect.com/science/article/pii/S240582972100427X
-https://www.sciencedirect.com/science/article/pii/S0378775320316086
+https://chemistry-europe.onlinelibrary.wiley.com/doi/full/10.1002/batt.202100324  ;   https://www.sciencedirect.com/science/article/pii/S240582972100427X ; https://www.sciencedirect.com/science/article/pii/S0378775320316086
 
 The codes allow generating 3D slurry and electrode mesostructures linked to LIB electrode manufacturing processes and they should be run sequentially (first the slurry, then the drying and finally the calendering).
 
